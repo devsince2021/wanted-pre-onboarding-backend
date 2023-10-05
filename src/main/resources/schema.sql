@@ -1,0 +1,6 @@
+CREATE TABLE companies (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    country VARCHAR(255) NOT NULL,
+    city VARCHAR(255) NOT NULL
+);
