@@ -31,5 +31,12 @@ public class Company {
     this.country = country;
     this.city = city;
   }
+
+  public Company(Integer id, String name, String country, String city) {
+    this.id = id;
+    this.name = name;
+    this.country = country;
+    this.city = city;
+  }
 }
 
