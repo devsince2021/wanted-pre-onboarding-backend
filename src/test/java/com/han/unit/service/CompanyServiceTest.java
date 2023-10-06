@@ -54,6 +54,16 @@ public class CompanyServiceTest {
     }
 
     @Test
+    public void createCompany_Return_Null_When_Repository_Return_Null() {
+      when(companyFormatter.toCompany(dummyDto)).thenReturn(dummyCompany);
+      when(companyRepository.save(dummyCompany)).thenReturn(null);
+      Company company = companyService.createCompany(dummyDto);
+
+      assertThat(company).isNull();
+    }
+
+
+    @Test
     public void createCompany_Return_Company() {
       Company savedCompany = new Company(1, dummyCompany.getName(), dummyCompany.getCountry(), dummyCompany.getCity());
 
