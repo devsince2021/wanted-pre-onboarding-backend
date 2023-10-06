@@ -8,9 +8,9 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -21,10 +21,9 @@ public class CompanyController {
   private CompanyService companyService;
 
   @PostMapping(EndPoint.COMPANY)
-  @ResponseStatus(HttpStatus.CREATED)
-  public Boolean createNewCompany(@Valid @RequestBody CompanyCreateDto dto) {
+  public ResponseEntity<Boolean> createNewCompany(@Valid @RequestBody CompanyCreateDto dto) {
     Company company = companyService.createCompany(dto);
-    return company != null;
+    Boolean isSuccess = company != null;
+    return new ResponseEntity<>(isSuccess, HttpStatus.CREATED);
   }
-
 }

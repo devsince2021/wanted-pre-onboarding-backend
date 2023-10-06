@@ -10,6 +10,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.ResponseEntity;
+
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -38,15 +41,15 @@ public class CompanyControllerTest {
     @Test
     public void createNewCompany_Return_False_When_Service_Return_Null() {
       when(companyService.createCompany(dummyDto)).thenReturn(null);
-      Boolean isSuccess = companyController.createNewCompany(dummyDto);
-      assertThat(isSuccess).isFalse();
+      ResponseEntity<Boolean> result = companyController.createNewCompany(dummyDto);
+      assertThat(result.getBody()).isFalse();
     }
 
     @Test
     public void createNewCompany_Return_True_When_Service_Return_Company() {
       when(companyService.createCompany(dummyDto)).thenReturn(dummyCompany);
-      Boolean isSuccess = companyController.createNewCompany(dummyDto);
-      assertThat(isSuccess).isTrue();
+      ResponseEntity<Boolean> result = companyController.createNewCompany(dummyDto);
+      assertThat(result.getBody()).isTrue();
     }
   }
 }
