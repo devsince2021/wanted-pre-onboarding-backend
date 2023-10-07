@@ -27,6 +27,18 @@ public class CompanyRepositoryTest {
   class Save_Test {
 
     @Test
+    public void save_Returns_Updated_Company_When_Company_Existed() {
+      Company initialCompany = new Company("wanted4", "US", "NY");
+      Company savedCompany = companyRepository.save(initialCompany);
+
+      Company changedCompany = new Company(savedCompany.getId(), "wanted4-1", "US", "NY");
+      Company updatedCompany = companyRepository.save(changedCompany);
+
+      assertThat(updatedCompany.getId()).isEqualTo(savedCompany.getId());
+      assertThat(updatedCompany.getName()).isEqualTo(changedCompany.getName());
+    }
+
+    @Test
     public void save_Throws_InvalidDataAccessApiUsageException_When_Entity_Is_Null() {
       Company invalidCompany = null;
       assertThrows(InvalidDataAccessApiUsageException.class, () -> companyRepository.save(invalidCompany));

@@ -2,12 +2,14 @@ package com.han.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name="companies")
 public class Company {
@@ -28,13 +30,6 @@ public class Company {
   private String city;
 
   public Company(String name, String country, String city) {
-    this.name = name;
-    this.country = country;
-    this.city = city;
-  }
-
-  public Company(Integer id, String name, String country, String city) {
-    this.id = id;
     this.name = name;
     this.country = country;
     this.city = city;

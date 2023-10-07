@@ -1,6 +1,7 @@
 package com.han.unit.service;
 
 import com.han.dto.CompanyCreateDto;
+import com.han.dto.CompanyUpdateDto;
 import com.han.model.Company;
 import com.han.repository.CompanyRepository;
 import com.han.service.CompanyServiceImpl;
@@ -14,6 +15,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 
+import javax.swing.text.html.Option;
+
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
@@ -26,6 +31,47 @@ public class CompanyServiceTest {
   private CompanyRepository companyRepository;
   @InjectMocks
   private CompanyServiceImpl companyService;
+
+  @Nested
+  class UpdateCompany_Test {
+    CompanyUpdateDto dummyDto = new CompanyUpdateDto(1,"wanted4-1", "UK", "London");
+    Company dummyCompany = new Company(1,"wanted4-1", "UK", "London");
+
+    @Test
+    public void updateCompany_Throws_RuntimeException_When_Save_Throws_InvalidDataAccessApiUsageException() {
+      when(companyFormatter.toCompany(dummyDto)).thenReturn(null);
+      when(companyRepository.save(null)).thenThrow(InvalidDataAccessApiUsageException.class);
+      assertThrows(RuntimeException.class, () -> companyService.updateCompany(dummyDto));
+    }
+
+    @Test
+    public void updateCompany_Throws_RuntimeException_When_Dto_Is_Null() {
+      CompanyUpdateDto invalidDto = null;
+      when(companyFormatter.toCompany(invalidDto)).thenThrow(IllegalArgumentException.class);
+      assertThrows(RuntimeException.class, () -> companyService.updateCompany(invalidDto));
+    }
+
+    @Test
+    public void updateCompany_Throws_RuntimeException_When_Dto_Is_Invalid() {
+      CompanyUpdateDto invalidDto = new CompanyUpdateDto();
+      when(companyFormatter.toCompany(invalidDto)).thenThrow(IllegalArgumentException.class);
+      assertThrows(RuntimeException.class, () -> companyService.updateCompany(invalidDto));
+    }
+
+    @Test
+    public void updateCompany_Returns_Null_When_Repository_Return_Null() {
+      // Repository never return null;
+    }
+    @Test
+    public void updateCompany_Returns_Updated_Company() {
+      when(companyFormatter.toCompany(dummyDto)).thenReturn(dummyCompany);
+      when(companyRepository.save(dummyCompany)).thenReturn(dummyCompany);
+      Company company = companyService.updateCompany(dummyDto);
+
+      assertThat(company.getId()).isNotNull();
+      assertThat(company.getName()).isEqualTo(dummyCompany.getName());
+    }
+  }
 
   @Nested
   class CreateCompany_Test {
@@ -61,8 +107,6 @@ public class CompanyServiceTest {
 
       assertThat(company).isNull();
     }
-
-
     @Test
     public void createCompany_Return_Company() {
       Company savedCompany = new Company(1, dummyCompany.getName(), dummyCompany.getCountry(), dummyCompany.getCity());
