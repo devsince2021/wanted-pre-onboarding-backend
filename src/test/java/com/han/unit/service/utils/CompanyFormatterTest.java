@@ -1,6 +1,7 @@
 package com.han.unit.service.utils;
 
 import com.han.dto.CompanyCreateDto;
+import com.han.dto.CompanyUpdateDto;
 import com.han.model.Company;
 import com.han.service.utils.CompanyFormatter;
 import org.junit.jupiter.api.Nested;
@@ -17,7 +18,31 @@ public class CompanyFormatterTest {
   private CompanyFormatter companyFormatter = new CompanyFormatter();
 
   @Nested
-  class ToCompany_Test {
+  class ToCompany_With_CompanyUpdateDto_Test {
+    CompanyUpdateDto dummyDto = new CompanyUpdateDto(1,"wanted4-1", "UK", "London");
+    Company dummyCompany = new Company(1,"wanted4-1", "UK", "London");
+
+    @Test
+    public void toCompany_Throws_IllegalArgumentException_When_CompanyUpdateDto_Is_Invalid() {
+      CompanyUpdateDto invalidDto = new CompanyUpdateDto();
+      assertThrows(IllegalArgumentException.class, () -> companyFormatter.toCompany(invalidDto));
+    }
+
+    @Test
+    public void toCompany_Throws_IllegalArgumentException_When_CompanyUpdateDto_Is_Null() {
+      CompanyUpdateDto invalidDto = null;
+      assertThrows(IllegalArgumentException.class, () -> companyFormatter.toCompany(invalidDto));
+    }
+
+    @Test
+    public void toCompany_Return_Company_When_CompanyUpdateDto_Is_Valid() {
+      Company company = companyFormatter.toCompany(dummyDto);
+      assertThat(company).isEqualTo(dummyCompany);
+    }
+  }
+
+  @Nested
+  class ToCompany_With_CompanyCreateDto_Test {
     CompanyCreateDto dummyDto = new CompanyCreateDto("wanted4", "Korea", "Seoul");
     Company dummyCompany = new Company("wanted4", "Korea", "Seoul");
 
@@ -29,7 +54,8 @@ public class CompanyFormatterTest {
 
     @Test
     public void toCompany_Throws_IllegalArgumentException_When_CompanyCreateDto_Is_Null() {
-      assertThrows(IllegalArgumentException.class, () -> companyFormatter.toCompany(null));
+      CompanyCreateDto invalidDto = null;
+      assertThrows(IllegalArgumentException.class, () -> companyFormatter.toCompany(invalidDto));
     }
 
     @Test
