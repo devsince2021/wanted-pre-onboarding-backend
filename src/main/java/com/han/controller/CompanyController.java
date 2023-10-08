@@ -32,9 +32,16 @@ public class CompanyController {
     return new ResponseEntity<>(company, HttpStatus.OK);
   }
 
+  @GetMapping(EndPoint.COMPANY_DETAIL)
+  public ResponseEntity<Company> getCompanyDetail(@PathVariable(EndPoint.COMPANY_ID) Integer id) {
+    Company company = companyService.getCompanyDetail(id);
+    return new ResponseEntity<>(company, HttpStatus.OK);
+  }
+
   @ExceptionHandler(IllegalArgumentException.class)
   public ResponseEntity handleIllegalArgumentException(IllegalArgumentException ex) {
     return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
   }
+
 
 }

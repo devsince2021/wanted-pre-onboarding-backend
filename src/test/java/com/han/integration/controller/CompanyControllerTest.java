@@ -16,8 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -31,6 +30,29 @@ public class CompanyControllerTest {
 
   @Autowired
   private ObjectMapper objectMapper;
+
+  @Nested
+  class GetCompanyDetail_Test {
+    private Integer matchedId = 1;
+    private Integer unmatchedId = 7;
+
+    private Company dummyCompany = new Company(1, "wanted6", "Korea", "Seoul");
+
+    private  String responseBody = "{"
+            + "\"id\":1,"
+            + "\"name\":\"wanted6\","
+            + "\"country\":\"Korea\","
+            + "\"city\":\"Seoul\""
+            + "}";
+
+    @Test
+    public void getCompanyDetail_Returns_Response_Ok_With_Company_When_Company_Found() throws Exception {
+      when(companyService.getCompanyDetail(matchedId)).thenReturn(dummyCompany);
+      mockMvc.perform(get(EndPoint.COMPANY + "/" + matchedId))
+              .andExpect(status().isOk())
+              .andExpect(content().string(responseBody));
+    }
+  }
 
   @Nested
   class UpdateCompany_Test {
@@ -53,7 +75,7 @@ public class CompanyControllerTest {
             + "\"city\": \"Seoul\""
             + "}";
 
-    CompanyUpdateDto dummyDto = new CompanyUpdateDto(1,"wanted6", "Korea", "Seoul");
+    CompanyUpdateDto dummyDto = new CompanyUpdateDto(1, "wanted6", "Korea", "Seoul");
     Company dummyCompany = new Company(1, "wanted6", "Korea", "Seoul");
 
     @Test
@@ -95,7 +117,6 @@ public class CompanyControllerTest {
 
     CompanyCreateDto dummyDto = new CompanyCreateDto("wanted6", "Korea", "Seoul");
     Company dummyCompany = new Company(1, "wanted6", "Korea", "Seoul");
-
 
 
     @Test
