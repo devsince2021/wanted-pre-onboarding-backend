@@ -96,4 +96,14 @@ public class CompanyControllerTest {
       assertThat(isSuccess).isTrue();
     }
   }
+
+  @Nested
+  class HandleCompanyExceptionTest {
+    private CompanyException dummyException = new CompanyException("Test Exception");
+    @Test
+    public void handleCompanyException_Returns_ExceptionMessage() {
+      String message = companyController.handleCompanyException(dummyException);
+      assertThat(message).isEqualTo(dummyException.getMessage());
+    }
+  }
 }

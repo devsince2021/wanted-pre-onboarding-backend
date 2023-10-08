@@ -17,7 +17,7 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
-  public Map<String, String> handleInvalidArgument(MethodArgumentNotValidException ex) {
+  public Map<String, String> handleInvalidArgumentException(MethodArgumentNotValidException ex) {
     log.error("Handling MethodArgumentNotValidException: >> " + ex.getFieldErrors());
 
     return ex.getBindingResult()
