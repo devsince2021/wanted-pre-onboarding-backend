@@ -6,5 +6,8 @@ import com.han.model.Company;
 
 public interface CompanyService {
   Company createCompany(CompanyCreateDto dto);
+
   Company updateCompany(CompanyUpdateDto dto);
+
+  Company getCompanyDetail(Integer id);
 }

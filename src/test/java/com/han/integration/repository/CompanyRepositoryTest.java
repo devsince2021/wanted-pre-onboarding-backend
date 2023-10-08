@@ -11,6 +11,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -22,6 +24,24 @@ public class CompanyRepositoryTest {
   private TestEntityManager testEntityManager;
   @Autowired
   private CompanyRepository companyRepository;
+
+  @Nested
+  class FindById_Test {
+
+    private Integer validId = 1;
+    private Integer invalidId = 6;
+
+    @Test
+    public void findById_Returns_Optional_Empty_When_Id_Is_Invalid() {
+      Optional<Company> maybeCompany = companyRepository.findById(invalidId);
+      assertThat(maybeCompany.isPresent()).isFalse();
+    }
+    @Test
+    public void findById_Returns_Optional_Company_When_Id_Is_Valid() {
+      Optional<Company> maybeCompany = companyRepository.findById(validId);
+      assertThat(maybeCompany.isPresent()).isTrue();
+    }
+  }
 
   @Nested
   class Save_Test {

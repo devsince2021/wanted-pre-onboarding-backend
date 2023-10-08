@@ -26,6 +26,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     return savedCompany;
   }
+
   @Override
   public Company updateCompany(CompanyUpdateDto dto) {
     try {
@@ -36,6 +37,12 @@ public class CompanyServiceImpl implements CompanyService {
       log.error("Error in updateCompany: >> " + ex.getMessage());
       throw ex;
     }
+  }
+
+  @Override
+  public Company getCompanyDetail(Integer id) {
+    Optional<Company> maybeCompany = companyRepository.findById(id);
+    return maybeCompany.orElseThrow(() -> new RuntimeException("Fail to find companyDetail"));
   }
 
 }

@@ -26,6 +26,20 @@ public class CompanyControllerTest {
   private CompanyController companyController;
 
   @Nested
+  class GetCompanyDetail_Test {
+    private Integer validId = 1;
+    private Company dummyCompany = new Company();
+    @Test
+    public void getCompanyDetail_Returns_Company_With_Status_Ok_When_Service_Returns_Company() {
+      when(companyService.getCompanyDetail(validId)).thenReturn(dummyCompany);
+      ResponseEntity<Company> response = companyController.getCompanyDetail(validId);
+
+      assertThat(response.getBody()).isEqualTo(dummyCompany);
+      assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+  }
+
+  @Nested
   class UpdateCompany_Test {
     private CompanyUpdateDto dummyDto = new CompanyUpdateDto();
     private Company dummyCompany = new Company();

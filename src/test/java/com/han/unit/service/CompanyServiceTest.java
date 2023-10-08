@@ -15,8 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 
-import javax.swing.text.html.Option;
-
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,6 +29,28 @@ public class CompanyServiceTest {
   private CompanyRepository companyRepository;
   @InjectMocks
   private CompanyServiceImpl companyService;
+
+  @Nested
+  class GetCompanyDetail_Test {
+    private Integer matchedId = 1;
+    private Integer unmatchedId = 6;
+
+    private Company dummyCompany = new Company(1,"wanted4-1", "UK", "London");
+
+    @Test
+    public void getCompanyDetail_Throws_RuntimeException_When_Id_Is_Not_Matched() {
+      when(companyRepository.findById(unmatchedId)).thenReturn(Optional.empty());
+      assertThrows(RuntimeException.class, () -> companyService.getCompanyDetail(unmatchedId));
+    }
+
+    @Test
+    public void getCompanyDetail_Returns_When_Id_Is_Matched() {
+      when(companyRepository.findById(matchedId)).thenReturn(Optional.of(dummyCompany));
+      Company company = companyService.getCompanyDetail(matchedId);
+
+      assertThat(company).isEqualTo(dummyCompany);
+    }
+  }
 
   @Nested
   class UpdateCompany_Test {
