@@ -32,16 +32,23 @@ public class CompanyServiceTest {
   private CompanyServiceImpl companyService;
 
   @Nested
-  class GetCompanyDetail_Test {
+  class GetCompanyDetailTest {
     private Integer matchedId = 1;
     private Integer unmatchedId = 6;
 
-    private Company dummyCompany = new Company(1,"wanted4-1", "UK", "London");
+    private Company dummyCompany = new Company(1, "wanted4-1", "UK", "London");
+
 
     @Test
-    public void getCompanyDetail_Throws_RuntimeException_When_Id_Is_Not_Matched() {
+    public void getCompanyDetail_Throws_InvalidDataAccessApiUsageException_When_Id_Is_Null() {
+      when(companyRepository.findById(null)).thenThrow(InvalidDataAccessApiUsageException.class);
+      assertThrows(InvalidDataAccessApiUsageException.class, () -> companyService.getCompanyDetail(null));
+    }
+
+    @Test
+    public void getCompanyDetail_Throws_CompanyException_When_Id_Is_Not_Matched() {
       when(companyRepository.findById(unmatchedId)).thenReturn(Optional.empty());
-      assertThrows(RuntimeException.class, () -> companyService.getCompanyDetail(unmatchedId));
+      assertThrows(CompanyException.class, () -> companyService.getCompanyDetail(unmatchedId));
     }
 
     @Test
@@ -55,8 +62,8 @@ public class CompanyServiceTest {
 
   @Nested
   class UpdateCompanyTest {
-    CompanyUpdateDto dummyDto = new CompanyUpdateDto(1,"wanted4-1", "UK", "London");
-    Company dummyCompany = new Company(1,"wanted4-1", "UK", "London");
+    CompanyUpdateDto dummyDto = new CompanyUpdateDto(1, "wanted4-1", "UK", "London");
+    Company dummyCompany = new Company(1, "wanted4-1", "UK", "London");
 
     @Test
     public void updateCompany_Throws_InvalidDataAccessApiUsageException_When_Save_Throws_InvalidDataAccessApiUsageException() {
@@ -85,6 +92,7 @@ public class CompanyServiceTest {
       when(companyRepository.save(dummyCompany)).thenReturn(null);
       assertThrows(CompanyException.class, () -> companyService.updateCompany(dummyDto));
     }
+
     @Test
     public void updateCompany_Returns_Updated_Company() {
       when(companyFormatter.toCompany(dummyDto)).thenReturn(dummyCompany);
@@ -129,6 +137,7 @@ public class CompanyServiceTest {
       assertThrows(CompanyException.class, () -> companyService.createCompany(dummyDto));
 
     }
+
     @Test
     public void createCompany_Return_Company() {
       Company savedCompany = new Company(1, dummyCompany.getName(), dummyCompany.getCountry(), dummyCompany.getCity());

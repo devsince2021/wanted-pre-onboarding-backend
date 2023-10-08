@@ -12,8 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -27,17 +25,35 @@ public class CompanyControllerTest {
   private CompanyController companyController;
 
   @Nested
-  class GetCompanyDetail_Test {
-    private Integer validId = 1;
+  class GetCompanyDetailTest {
+    private Integer matchedId = 1;
+    private Integer unmatchedId = 7;
     private Company dummyCompany = new Company();
 
     @Test
-    public void getCompanyDetail_Returns_Company_With_Status_Ok_When_Service_Returns_Company() {
-      when(companyService.getCompanyDetail(validId)).thenReturn(dummyCompany);
-      ResponseEntity<Company> response = companyController.getCompanyDetail(validId);
+    public void getCompanyDetail_Throws_RuntimeException_When_Service_Throws_RuntimeException() {
+      when(companyService.getCompanyDetail(matchedId)).thenThrow(RuntimeException.class);
+      assertThrows(RuntimeException.class, () -> companyController.getCompanyDetail(matchedId));
+    }
 
-      assertThat(response.getBody()).isEqualTo(dummyCompany);
-      assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    @Test
+    public void getCompanyDetail_Throws_CompanyException_When_Service_Throws_CompanyException() {
+      when(companyService.getCompanyDetail(matchedId)).thenThrow(CompanyException.class);
+      assertThrows(CompanyException.class, () -> companyController.getCompanyDetail(matchedId));
+    }
+
+    @Test
+    public void getCompanyDetail_Throws_CompanyException_When_Service_Returns_Null() {
+      when(companyService.getCompanyDetail(unmatchedId)).thenReturn(null);
+      assertThrows(CompanyException.class, () -> companyController.getCompanyDetail(unmatchedId));
+    }
+
+    @Test
+    public void getCompanyDetail_Returns_Company_When_Service_Returns_Company() {
+      when(companyService.getCompanyDetail(matchedId)).thenReturn(dummyCompany);
+      Company company = companyController.getCompanyDetail(matchedId);
+
+      assertThat(company).isEqualTo(dummyCompany);
     }
   }
 

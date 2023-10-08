@@ -35,7 +35,7 @@ public class CompanyControllerTest {
   private ObjectMapper objectMapper;
 
   @Nested
-  class GetCompanyDetail_Test {
+  class GetCompanyDetailTest {
     private Integer matchedId = 1;
     private Integer unmatchedId = 7;
 
@@ -49,7 +49,28 @@ public class CompanyControllerTest {
             + "}";
 
     @Test
-    public void getCompanyDetail_Returns_Response_Ok_With_Company_When_Company_Found() throws Exception {
+    public void getCompanyDetail_Response_InternalServerError_When_Exception_Occurs() throws Exception {
+      when(companyService.getCompanyDetail(matchedId)).thenThrow(RuntimeException.class);
+      mockMvc.perform(get(EndPoint.COMPANY + "/" + matchedId))
+              .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    public void getCompanyDetail_Response_BadRequest_When_Service_Throws_CompanyException() throws Exception {
+      when(companyService.getCompanyDetail(matchedId)).thenThrow(CompanyException.class);
+      mockMvc.perform(get(EndPoint.COMPANY + "/" + matchedId))
+              .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void getCompanyDetail_Response_BadRequest_When_No_Matched_Company() throws Exception {
+      when(companyService.getCompanyDetail(unmatchedId)).thenReturn(null);
+      mockMvc.perform(get(EndPoint.COMPANY + "/" + unmatchedId))
+              .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void getCompanyDetail_Response_Ok_With_Company_When_Company_Found() throws Exception {
       when(companyService.getCompanyDetail(matchedId)).thenReturn(dummyCompany);
       mockMvc.perform(get(EndPoint.COMPANY + "/" + matchedId))
               .andExpect(status().isOk())

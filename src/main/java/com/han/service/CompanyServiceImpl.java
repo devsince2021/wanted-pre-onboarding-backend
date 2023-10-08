@@ -49,7 +49,7 @@ public class CompanyServiceImpl implements CompanyService {
   @Override
   public Company getCompanyDetail(Integer id) {
     Optional<Company> maybeCompany = companyRepository.findById(id);
-    return maybeCompany.orElseThrow(() -> new RuntimeException("Fail to find companyDetail"));
+    return maybeCompany.orElseThrow(() -> new CompanyException("Fail to find companyDetail"));
   }
 
 }

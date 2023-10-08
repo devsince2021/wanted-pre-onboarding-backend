@@ -45,9 +45,15 @@ public class CompanyController {
   }
 
   @GetMapping(EndPoint.COMPANY_DETAIL)
-  public ResponseEntity<Company> getCompanyDetail(@PathVariable(EndPoint.COMPANY_ID) Integer id) {
+  @ResponseStatus(HttpStatus.OK)
+  public Company getCompanyDetail(@PathVariable(EndPoint.COMPANY_ID) Integer id) {
     Company company = companyService.getCompanyDetail(id);
-    return new ResponseEntity<>(company, HttpStatus.OK);
+
+    if (company == null) {
+      throw new CompanyException("Fail to find company");
+    }
+
+    return company;
   }
 
   @ExceptionHandler(CompanyException.class)
