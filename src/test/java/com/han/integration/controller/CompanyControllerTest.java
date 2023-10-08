@@ -58,36 +58,51 @@ public class CompanyControllerTest {
   }
 
   @Nested
-  class UpdateCompany_Test {
+  class UpdateCompanyTest {
 
-    String validRequestBody = "{"
+    private String validRequestBody = "{"
             + "\"id\": 1,"
             + "\"companyName\": \"wanted6\","
             + "\"country\": \"Korea\","
             + "\"city\": \"Seoul\""
             + "}";
 
-    String invalidRequestBody = "{"
-            + "\"id\": 1,"
+    private String invalidRequestBody = "{"
+            + "\"id\": 1"
             + "}";
 
-    String responseBody = "{"
+    private String responseBody = "{"
             + "\"id\": 1,"
             + "\"name\": \"wanted6\","
             + "\"country\": \"Korea\","
             + "\"city\": \"Seoul\""
             + "}";
 
-    CompanyUpdateDto dummyDto = new CompanyUpdateDto(1, "wanted6", "Korea", "Seoul");
-    Company dummyCompany = new Company(1, "wanted6", "Korea", "Seoul");
+    private CompanyUpdateDto dummyDto = new CompanyUpdateDto(1, "wanted6", "Korea", "Seoul");
+    private Company dummyCompany = new Company(1, "wanted6", "Korea", "Seoul");
 
     @Test
     public void updateCompany_Return_InternalError_When_Exception_Occurs() throws Exception {
+      when(companyService.updateCompany(dummyDto)).thenThrow(RuntimeException.class);
 
+      mockMvc.perform(put(EndPoint.COMPANY)
+                      .contentType(MediaType.APPLICATION_JSON)
+                      .content(validRequestBody))
+              .andExpect(status().isInternalServerError());
     }
 
     @Test
-    public void updateCompany_Return_BadRequest_When_Request_Invalid() throws Exception {
+    public void updateCompany_Response_BadRequest_When_Service_Throws_CompanyException() throws Exception {
+      when(companyService.updateCompany(dummyDto)).thenThrow(CompanyException.class);
+
+      mockMvc.perform(post(EndPoint.COMPANY)
+                      .contentType(MediaType.APPLICATION_JSON_VALUE)
+                      .content(validRequestBody))
+              .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void updateCompany_Response_BadRequest_When_Request_Invalid() throws Exception {
       when(companyService.updateCompany(dummyDto)).thenReturn(dummyCompany);
 
       mockMvc.perform(put(EndPoint.COMPANY)
@@ -97,7 +112,7 @@ public class CompanyControllerTest {
     }
 
     @Test
-    public void updateCompany_Return_Response_Ok_When_Update_Success() throws Exception {
+    public void updateCompany_Response_Ok_When_Update_Success() throws Exception {
       when(companyService.updateCompany(dummyDto)).thenReturn(dummyCompany);
 
       mockMvc.perform(put(EndPoint.COMPANY)

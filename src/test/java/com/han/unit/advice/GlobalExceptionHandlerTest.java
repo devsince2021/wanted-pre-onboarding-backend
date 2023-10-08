@@ -39,7 +39,7 @@ public class GlobalExceptionHandlerTest {
     assertThat(errorMap).isNotEmpty();
     assertThat(errorMap.get("country")).isEqualTo(dummyError.getDefaultMessage());
   }
-  
+
   @Test
   public void handleRuntimeException_Returns_Message() {
     RuntimeException dummyException = new RuntimeException("It is test");

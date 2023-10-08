@@ -54,34 +54,36 @@ public class CompanyServiceTest {
   }
 
   @Nested
-  class UpdateCompany_Test {
+  class UpdateCompanyTest {
     CompanyUpdateDto dummyDto = new CompanyUpdateDto(1,"wanted4-1", "UK", "London");
     Company dummyCompany = new Company(1,"wanted4-1", "UK", "London");
 
     @Test
-    public void updateCompany_Throws_RuntimeException_When_Save_Throws_InvalidDataAccessApiUsageException() {
+    public void updateCompany_Throws_InvalidDataAccessApiUsageException_When_Save_Throws_InvalidDataAccessApiUsageException() {
       when(companyFormatter.toCompany(dummyDto)).thenReturn(null);
       when(companyRepository.save(null)).thenThrow(InvalidDataAccessApiUsageException.class);
-      assertThrows(RuntimeException.class, () -> companyService.updateCompany(dummyDto));
+      assertThrows(InvalidDataAccessApiUsageException.class, () -> companyService.updateCompany(dummyDto));
     }
 
     @Test
-    public void updateCompany_Throws_RuntimeException_When_Dto_Is_Null() {
+    public void updateCompany_Throws_CompanyException_When_Dto_Is_Null() {
       CompanyUpdateDto invalidDto = null;
-      when(companyFormatter.toCompany(invalidDto)).thenThrow(IllegalArgumentException.class);
-      assertThrows(RuntimeException.class, () -> companyService.updateCompany(invalidDto));
+      when(companyFormatter.toCompany(invalidDto)).thenThrow(CompanyException.class);
+      assertThrows(CompanyException.class, () -> companyService.updateCompany(invalidDto));
     }
 
     @Test
-    public void updateCompany_Throws_RuntimeException_When_Dto_Is_Invalid() {
+    public void updateCompany_Throws_CompanyException_When_Dto_Is_Invalid() {
       CompanyUpdateDto invalidDto = new CompanyUpdateDto();
-      when(companyFormatter.toCompany(invalidDto)).thenThrow(IllegalArgumentException.class);
-      assertThrows(RuntimeException.class, () -> companyService.updateCompany(invalidDto));
+      when(companyFormatter.toCompany(invalidDto)).thenThrow(CompanyException.class);
+      assertThrows(CompanyException.class, () -> companyService.updateCompany(invalidDto));
     }
 
     @Test
-    public void updateCompany_Returns_Null_When_Repository_Return_Null() {
-      // Repository never return null;
+    public void updateCompany_Throws_CompanyException_When_Repository_Return_Null() {
+      when(companyFormatter.toCompany(dummyDto)).thenReturn(dummyCompany);
+      when(companyRepository.save(dummyCompany)).thenReturn(null);
+      assertThrows(CompanyException.class, () -> companyService.updateCompany(dummyDto));
     }
     @Test
     public void updateCompany_Returns_Updated_Company() {
@@ -107,14 +109,14 @@ public class CompanyServiceTest {
     }
 
     @Test
-    public void createCompany_Throws_IllegalArgumentException_When_CompanyCreate_Is_Null() {
+    public void createCompany_Throws_CompanyException_When_CompanyCreate_Is_Null() {
       CompanyCreateDto invalidDto = null;
       when(companyFormatter.toCompany(invalidDto)).thenThrow(CompanyException.class);
       assertThrows(CompanyException.class, () -> companyService.createCompany(invalidDto));
     }
 
     @Test
-    public void createCompany_Throws_IllegalArgumentException_When_CompanyCreate_Is_Invalid() {
+    public void createCompany_Throws_CompanyException_When_CompanyCreate_Is_Invalid() {
       CompanyCreateDto invalidDto = new CompanyCreateDto(null, null, null);
       when(companyFormatter.toCompany(invalidDto)).thenThrow(CompanyException.class);
       assertThrows(CompanyException.class, () -> companyService.createCompany(invalidDto));

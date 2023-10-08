@@ -33,9 +33,15 @@ public class CompanyController {
   }
 
   @PutMapping(EndPoint.COMPANY)
-  public ResponseEntity<Company> updateCompany(@Valid @RequestBody CompanyUpdateDto dto) {
+  @ResponseStatus(HttpStatus.OK)
+  public Company updateCompany(@Valid @RequestBody CompanyUpdateDto dto) {
     Company company = companyService.updateCompany(dto);
-    return new ResponseEntity<>(company, HttpStatus.OK);
+
+    if (company == null) {
+      throw new CompanyException("Fail to update company");
+    }
+
+    return company;
   }
 
   @GetMapping(EndPoint.COMPANY_DETAIL)

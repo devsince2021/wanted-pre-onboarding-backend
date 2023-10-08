@@ -42,24 +42,34 @@ public class CompanyControllerTest {
   }
 
   @Nested
-  class UpdateCompany_Test {
+  class UpdateCompanyTest {
     private CompanyUpdateDto dummyDto = new CompanyUpdateDto();
     private Company dummyCompany = new Company();
 
     @Test
-    public void updateCompany_Throws_RuntimeException_When_Service_Throws_RuntimeException() {
+    public void updateCompany_Throws_RuntimeException_When_Service_Throws() {
       when(companyService.updateCompany(dummyDto)).thenThrow(RuntimeException.class);
       assertThrows(RuntimeException.class, () -> companyController.updateCompany(dummyDto));
     }
 
     @Test
-    public void updateCompany_Returns_Company_With_STATUS_OK_When_Service_Returns_Company() {
-      when(companyService.updateCompany(dummyDto)).thenReturn(dummyCompany);
-      ResponseEntity<Company> company = companyController.updateCompany(dummyDto);
+    public void updateCompany_Throws_CompanyException_When_Service_Throws() {
+      when(companyService.updateCompany(dummyDto)).thenThrow(CompanyException.class);
+      assertThrows(CompanyException.class, () -> companyController.updateCompany(dummyDto));
+    }
 
-      assertThat(company).isInstanceOf(ResponseEntity.class);
-      assertThat(company.getStatusCode()).isEqualTo(HttpStatus.OK);
-      assertThat(company.getBody()).isEqualTo(dummyCompany);
+    @Test
+    public void updateCompany_Throws_CompanyException_When_Service_Return_Null() {
+      when(companyService.updateCompany(dummyDto)).thenReturn(null);
+      assertThrows(CompanyException.class, () -> companyController.updateCompany(dummyDto));
+    }
+
+    @Test
+    public void updateCompany_Returns_Company_When_Service_Returns_Company() {
+      when(companyService.updateCompany(dummyDto)).thenReturn(dummyCompany);
+      Company company = companyController.updateCompany(dummyDto);
+
+      assertThat(company).isEqualTo(dummyCompany);
     }
   }
 
@@ -100,6 +110,7 @@ public class CompanyControllerTest {
   @Nested
   class HandleCompanyExceptionTest {
     private CompanyException dummyException = new CompanyException("Test Exception");
+
     @Test
     public void handleCompanyException_Returns_ExceptionMessage() {
       String message = companyController.handleCompanyException(dummyException);

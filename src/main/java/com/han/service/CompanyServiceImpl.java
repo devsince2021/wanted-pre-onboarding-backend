@@ -26,6 +26,7 @@ public class CompanyServiceImpl implements CompanyService {
     Company savedCompany = companyRepository.save(company);
 
     if (savedCompany == null) {
+      log.error("Fail create company: >> " + dto);
       throw new CompanyException("Fail to create company");
     }
 
@@ -34,14 +35,15 @@ public class CompanyServiceImpl implements CompanyService {
 
   @Override
   public Company updateCompany(CompanyUpdateDto dto) {
-    try {
-      Company company = companyFormatter.toCompany(dto);
-      Company updatedCompany = companyRepository.save(company);
-      return updatedCompany;
-    } catch (RuntimeException ex) {
-      log.error("Error in updateCompany: >> " + ex.getMessage());
-      throw ex;
+    Company company = companyFormatter.toCompany(dto);
+    Company updatedCompany = companyRepository.save(company);
+
+    if (updatedCompany == null) {
+      log.error("Fail update company: >> " + dto);
+      throw new CompanyException("Fail to update company");
     }
+
+    return updatedCompany;
   }
 
   @Override
