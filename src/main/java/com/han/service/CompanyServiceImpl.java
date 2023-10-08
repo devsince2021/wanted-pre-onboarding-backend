@@ -2,6 +2,7 @@ package com.han.service;
 
 import com.han.dto.CompanyCreateDto;
 import com.han.dto.CompanyUpdateDto;
+import com.han.exception.CompanyException;
 import com.han.model.Company;
 import com.han.repository.CompanyRepository;
 import com.han.service.utils.CompanyFormatter;
@@ -23,6 +24,10 @@ public class CompanyServiceImpl implements CompanyService {
   public Company createCompany(CompanyCreateDto dto) {
     Company company = companyFormatter.toCompany(dto);
     Company savedCompany = companyRepository.save(company);
+
+    if (savedCompany == null) {
+      throw new CompanyException("Fail to create company");
+    }
 
     return savedCompany;
   }

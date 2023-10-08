@@ -1,12 +1,15 @@
 package com.han.integration.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.han.constants.EndPoint;
 import com.han.controller.CompanyController;
 import com.han.dto.CompanyCreateDto;
 import com.han.dto.CompanyUpdateDto;
+import com.han.exception.CompanyException;
 import com.han.model.Company;
 import com.han.service.CompanyService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +41,7 @@ public class CompanyControllerTest {
 
     private Company dummyCompany = new Company(1, "wanted6", "Korea", "Seoul");
 
-    private  String responseBody = "{"
+    private String responseBody = "{"
             + "\"id\":1,"
             + "\"name\":\"wanted6\","
             + "\"country\":\"Korea\","
@@ -107,26 +110,58 @@ public class CompanyControllerTest {
   }
 
   @Nested
-  class CreateNewCompany_Test {
+  class CreateCompany_Test {
 
-    String requestBody = "{"
-            + "\"companyName\": \"wanted6\","
-            + "\"country\": \"Korea\","
-            + "\"city\": \"Seoul\""
+    private CompanyCreateDto dummyDto = new CompanyCreateDto("wanted6", "Korea", "Seoul");
+    private Company dummyCompany = new Company(1, "wanted6", "Korea", "Seoul");
+
+    private String validRequestBody = "{"
+            + "\"companyName\":\"wanted6\","
+            + "\"country\":\"Korea\","
+            + "\"city\":\"Seoul\""
             + "}";
 
-    CompanyCreateDto dummyDto = new CompanyCreateDto("wanted6", "Korea", "Seoul");
-    Company dummyCompany = new Company(1, "wanted6", "Korea", "Seoul");
+    private String invalidRequestBody = "{"
+            + "\"companyName\":\"wanted6\","
+//              + "\"country\":\"Korea\","
+            + "\"city\":\"Seoul\""
+            + "}";
 
+    @Test
+    public void createCompany_Response_InternalServerError_When_Service_Throws() throws Exception {
+      when(companyService.createCompany(dummyDto)).thenThrow(RuntimeException.class);
+
+      mockMvc.perform(post(EndPoint.COMPANY)
+                      .contentType(MediaType.APPLICATION_JSON_VALUE)
+                      .content(validRequestBody))
+              .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    public void createCompany_Response_BadRequest_When_Service_Throws_CompanyException() throws Exception {
+      when(companyService.createCompany(dummyDto)).thenThrow(CompanyException.class);
+
+      mockMvc.perform(post(EndPoint.COMPANY)
+                      .contentType(MediaType.APPLICATION_JSON_VALUE)
+                      .content(validRequestBody))
+              .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void createCompany_Response_BadRequest_When_RequestBody_Invalid() throws Exception {
+      mockMvc.perform(post(EndPoint.COMPANY)
+                      .contentType(MediaType.APPLICATION_JSON_VALUE)
+                      .content(invalidRequestBody))
+              .andExpect(status().isBadRequest());
+    }
 
     @Test
     public void createNewCompany_Return_True_When_Success() throws Exception {
-
       when(companyService.createCompany(dummyDto)).thenReturn(dummyCompany);
 
       mockMvc.perform(post(EndPoint.COMPANY)
                       .contentType(MediaType.APPLICATION_JSON)
-                      .content(requestBody))
+                      .content(validRequestBody))
               .andExpect(status().isCreated())
               .andExpect(content().string("true"));
     }

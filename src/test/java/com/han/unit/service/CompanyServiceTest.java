@@ -2,6 +2,7 @@ package com.han.unit.service;
 
 import com.han.dto.CompanyCreateDto;
 import com.han.dto.CompanyUpdateDto;
+import com.han.exception.CompanyException;
 import com.han.model.Company;
 import com.han.repository.CompanyRepository;
 import com.han.service.CompanyServiceImpl;
@@ -94,9 +95,9 @@ public class CompanyServiceTest {
   }
 
   @Nested
-  class CreateCompany_Test {
-    CompanyCreateDto dummyDto = new CompanyCreateDto("wanted4", "Korea", "Seoul");
-    Company dummyCompany = new Company("wanted4", "Korea", "Seoul");
+  class CreateCompanyTest {
+    private CompanyCreateDto dummyDto = new CompanyCreateDto("wanted4", "Korea", "Seoul");
+    private Company dummyCompany = new Company("wanted4", "Korea", "Seoul");
 
     @Test
     public void createCompany_Throws_InvalidDataAccessApiUsageException_When_Save_Throws() {
@@ -108,24 +109,23 @@ public class CompanyServiceTest {
     @Test
     public void createCompany_Throws_IllegalArgumentException_When_CompanyCreate_Is_Null() {
       CompanyCreateDto invalidDto = null;
-      when(companyFormatter.toCompany(invalidDto)).thenThrow(IllegalArgumentException.class);
-      assertThrows(IllegalArgumentException.class, () -> companyService.createCompany(invalidDto));
+      when(companyFormatter.toCompany(invalidDto)).thenThrow(CompanyException.class);
+      assertThrows(CompanyException.class, () -> companyService.createCompany(invalidDto));
     }
 
     @Test
     public void createCompany_Throws_IllegalArgumentException_When_CompanyCreate_Is_Invalid() {
       CompanyCreateDto invalidDto = new CompanyCreateDto(null, null, null);
-      when(companyFormatter.toCompany(invalidDto)).thenThrow(IllegalArgumentException.class);
-      assertThrows(IllegalArgumentException.class, () -> companyService.createCompany(invalidDto));
+      when(companyFormatter.toCompany(invalidDto)).thenThrow(CompanyException.class);
+      assertThrows(CompanyException.class, () -> companyService.createCompany(invalidDto));
     }
 
     @Test
-    public void createCompany_Return_Null_When_Repository_Return_Null() {
+    public void createCompany_Throws_CompanyException_When_Repository_Return_Null() {
       when(companyFormatter.toCompany(dummyDto)).thenReturn(dummyCompany);
       when(companyRepository.save(dummyCompany)).thenReturn(null);
-      Company company = companyService.createCompany(dummyDto);
+      assertThrows(CompanyException.class, () -> companyService.createCompany(dummyDto));
 
-      assertThat(company).isNull();
     }
     @Test
     public void createCompany_Return_Company() {

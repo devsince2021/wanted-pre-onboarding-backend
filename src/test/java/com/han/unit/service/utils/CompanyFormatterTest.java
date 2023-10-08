@@ -2,6 +2,7 @@ package com.han.unit.service.utils;
 
 import com.han.dto.CompanyCreateDto;
 import com.han.dto.CompanyUpdateDto;
+import com.han.exception.CompanyException;
 import com.han.model.Company;
 import com.han.service.utils.CompanyFormatter;
 import org.junit.jupiter.api.Nested;
@@ -43,19 +44,19 @@ public class CompanyFormatterTest {
 
   @Nested
   class ToCompany_With_CompanyCreateDto_Test {
-    CompanyCreateDto dummyDto = new CompanyCreateDto("wanted4", "Korea", "Seoul");
-    Company dummyCompany = new Company("wanted4", "Korea", "Seoul");
+    private CompanyCreateDto dummyDto = new CompanyCreateDto("wanted4", "Korea", "Seoul");
+    private Company dummyCompany = new Company("wanted4", "Korea", "Seoul");
 
     @Test
     public void toCompany_Throws_IllegalArgumentException_When_CompanyCreateDto_Is_Invalid() {
       CompanyCreateDto invalidDto = new CompanyCreateDto();
-      assertThrows(IllegalArgumentException.class, () -> companyFormatter.toCompany(invalidDto));
+      assertThrows(CompanyException.class, () -> companyFormatter.toCompany(invalidDto));
     }
 
     @Test
     public void toCompany_Throws_IllegalArgumentException_When_CompanyCreateDto_Is_Null() {
       CompanyCreateDto invalidDto = null;
-      assertThrows(IllegalArgumentException.class, () -> companyFormatter.toCompany(invalidDto));
+      assertThrows(CompanyException.class, () -> companyFormatter.toCompany(invalidDto));
     }
 
     @Test

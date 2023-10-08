@@ -3,6 +3,7 @@ package com.han.unit.controller;
 import com.han.controller.CompanyController;
 import com.han.dto.CompanyCreateDto;
 import com.han.dto.CompanyUpdateDto;
+import com.han.exception.CompanyException;
 import com.han.model.Company;
 import com.han.service.CompanyService;
 import org.junit.jupiter.api.Nested;
@@ -29,6 +30,7 @@ public class CompanyControllerTest {
   class GetCompanyDetail_Test {
     private Integer validId = 1;
     private Company dummyCompany = new Company();
+
     @Test
     public void getCompanyDetail_Returns_Company_With_Status_Ok_When_Service_Returns_Company() {
       when(companyService.getCompanyDetail(validId)).thenReturn(dummyCompany);
@@ -49,6 +51,7 @@ public class CompanyControllerTest {
       when(companyService.updateCompany(dummyDto)).thenThrow(RuntimeException.class);
       assertThrows(RuntimeException.class, () -> companyController.updateCompany(dummyDto));
     }
+
     @Test
     public void updateCompany_Returns_Company_With_STATUS_OK_When_Service_Returns_Company() {
       when(companyService.updateCompany(dummyDto)).thenReturn(dummyCompany);
@@ -62,30 +65,35 @@ public class CompanyControllerTest {
 
 
   @Nested
-  class CreateNewCompany_Test {
+  class CreateCompanyTest {
 
     private CompanyCreateDto dummyDto = new CompanyCreateDto();
 
     private Company dummyCompany = new Company();
 
     @Test
-    public void createNewCompany_Throws_IllegalArgumentException() {
-      when(companyService.createCompany(dummyDto)).thenThrow(IllegalArgumentException.class);
-      assertThrows(IllegalArgumentException.class, () -> companyController.createNewCompany(dummyDto));
+    public void createCompany_Throws_RuntimeException_When_Service_Throws() {
+      when(companyService.createCompany(dummyDto)).thenThrow(RuntimeException.class);
+      assertThrows(RuntimeException.class, () -> companyController.createCompany(dummyDto));
     }
 
     @Test
-    public void createNewCompany_Return_False_When_Service_Return_Null() {
+    public void createCompany_Throws_CompanyException_When_Service_Throws() {
+      when(companyService.createCompany(dummyDto)).thenThrow(CompanyException.class);
+      assertThrows(CompanyException.class, () -> companyController.createCompany(dummyDto));
+    }
+
+    @Test
+    public void createCompany_Throws_CompanyException_When_Service_Return_Null() {
       when(companyService.createCompany(dummyDto)).thenReturn(null);
-      ResponseEntity<Boolean> result = companyController.createNewCompany(dummyDto);
-      assertThat(result.getBody()).isFalse();
+      assertThrows(CompanyException.class, () -> companyController.createCompany(dummyDto));
     }
 
     @Test
-    public void createNewCompany_Return_True_When_Service_Return_Company() {
+    public void createCompany_Return_True_When_Service_Return_Company() {
       when(companyService.createCompany(dummyDto)).thenReturn(dummyCompany);
-      ResponseEntity<Boolean> result = companyController.createNewCompany(dummyDto);
-      assertThat(result.getBody()).isTrue();
+      Boolean isSuccess = companyController.createCompany(dummyDto);
+      assertThat(isSuccess).isTrue();
     }
   }
 }
