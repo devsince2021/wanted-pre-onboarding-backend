@@ -26,16 +26,22 @@ public class CompanyRepositoryTest {
   private CompanyRepository companyRepository;
 
   @Nested
-  class FindById_Test {
+  class FindByIdTest {
 
     private Integer validId = 1;
     private Integer invalidId = 6;
+
+    @Test
+    public void findById_Throws_InvalidDataAccessApiUsageException_When_Id_Is_Null() {
+      assertThrows(InvalidDataAccessApiUsageException.class, () -> companyRepository.findById(null));
+    }
 
     @Test
     public void findById_Returns_Optional_Empty_When_Id_Is_Invalid() {
       Optional<Company> maybeCompany = companyRepository.findById(invalidId);
       assertThat(maybeCompany.isPresent()).isFalse();
     }
+
     @Test
     public void findById_Returns_Optional_Company_When_Id_Is_Valid() {
       Optional<Company> maybeCompany = companyRepository.findById(validId);
@@ -44,7 +50,7 @@ public class CompanyRepositoryTest {
   }
 
   @Nested
-  class Save_Test {
+  class SaveTest {
 
     @Test
     public void save_Returns_Updated_Company_When_Company_Existed() {

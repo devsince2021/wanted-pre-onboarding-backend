@@ -3,6 +3,7 @@ package com.han.controller;
 import com.han.constants.EndPoint;
 import com.han.dto.CompanyCreateDto;
 import com.han.dto.CompanyUpdateDto;
+import com.han.exception.CompanyException;
 import com.han.model.Company;
 import com.han.service.CompanyService;
 import jakarta.validation.Valid;
@@ -20,28 +21,46 @@ public class CompanyController {
   private CompanyService companyService;
 
   @PostMapping(EndPoint.COMPANY)
-  public ResponseEntity<Boolean> createNewCompany(@Valid @RequestBody CompanyCreateDto dto) {
+  @ResponseStatus(HttpStatus.CREATED)
+  public Boolean createCompany(@RequestBody @Valid CompanyCreateDto dto) {
     Company company = companyService.createCompany(dto);
-    Boolean isSuccess = company != null;
-    return new ResponseEntity<>(isSuccess, HttpStatus.CREATED);
+
+    if (company == null) {
+      throw new CompanyException("Fail to create company");
+    }
+
+    return true;
   }
 
   @PutMapping(EndPoint.COMPANY)
-  public ResponseEntity<Company> updateCompany(@Valid @RequestBody CompanyUpdateDto dto) {
+  @ResponseStatus(HttpStatus.OK)
+  public Company updateCompany(@Valid @RequestBody CompanyUpdateDto dto) {
     Company company = companyService.updateCompany(dto);
-    return new ResponseEntity<>(company, HttpStatus.OK);
+
+    if (company == null) {
+      throw new CompanyException("Fail to update company");
+    }
+
+    return company;
   }
 
   @GetMapping(EndPoint.COMPANY_DETAIL)
-  public ResponseEntity<Company> getCompanyDetail(@PathVariable(EndPoint.COMPANY_ID) Integer id) {
+  @ResponseStatus(HttpStatus.OK)
+  public Company getCompanyDetail(@PathVariable(EndPoint.COMPANY_ID) Integer id) {
     Company company = companyService.getCompanyDetail(id);
-    return new ResponseEntity<>(company, HttpStatus.OK);
+
+    if (company == null) {
+      throw new CompanyException("Fail to find company");
+    }
+
+    return company;
   }
 
-  @ExceptionHandler(IllegalArgumentException.class)
-  public ResponseEntity handleIllegalArgumentException(IllegalArgumentException ex) {
-    return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+  @ExceptionHandler(CompanyException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public String handleCompanyException(CompanyException ex) {
+    log.error("Handle CompanyException: >> " + ex.getMessage());
+    return ex.getMessage();
   }
-
 
 }

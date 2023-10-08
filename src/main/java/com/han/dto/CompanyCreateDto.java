@@ -10,11 +10,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CompanyCreateDto {
-  @NotBlank
+  @NotBlank(message = "Company name should not be blank or empty")
   private String companyName;
-  @NotBlank
+  @NotBlank(message = "Country should not be blank or empty")
   private String country;
-  @NotBlank
+  @NotBlank(message = "City should not be blank or empty")
   private String city;
 
   public boolean isValid() {
