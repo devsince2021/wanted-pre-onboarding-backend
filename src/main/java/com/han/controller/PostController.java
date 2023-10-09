@@ -26,7 +26,7 @@ public class PostController {
     Boolean isSuccess = savedPost != null;
 
     if (!isSuccess) {
-      throw new PostException("Fail to create post2");
+      throw new PostException("Fail to create post in controller");
     }
 
     return isSuccess;
