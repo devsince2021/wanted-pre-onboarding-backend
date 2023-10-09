@@ -99,8 +99,14 @@ public class CompanyControllerTest {
             + "\"city\": \"Seoul\""
             + "}";
 
-    private CompanyUpdateDto dummyDto = new CompanyUpdateDto(1, "wanted6", "Korea", "Seoul");
-    private Company dummyCompany = new Company(1, "wanted6", "Korea", "Seoul");
+    private CompanyUpdateDto dummyDto;
+    private Company dummyCompany;
+
+    @BeforeEach
+    public void setUp() throws JsonProcessingException {
+      dummyDto = objectMapper.readValue(validRequestBody, CompanyUpdateDto.class);
+      dummyCompany = new Company(1, dummyDto.getCompanyName(), dummyDto.getCountry(), dummyDto.getCity());
+    }
 
     @Test
     public void updateCompany_Return_InternalError_When_Exception_Occurs() throws Exception {
@@ -147,10 +153,6 @@ public class CompanyControllerTest {
 
   @Nested
   class CreateCompany_Test {
-
-    private CompanyCreateDto dummyDto = new CompanyCreateDto("wanted6", "Korea", "Seoul");
-    private Company dummyCompany = new Company(1, "wanted6", "Korea", "Seoul");
-
     private String validRequestBody = "{"
             + "\"companyName\":\"wanted6\","
             + "\"country\":\"Korea\","
@@ -162,6 +164,15 @@ public class CompanyControllerTest {
 //              + "\"country\":\"Korea\","
             + "\"city\":\"Seoul\""
             + "}";
+
+    private CompanyCreateDto dummyDto;
+    private Company dummyCompany;
+
+    @BeforeEach
+    public void setUp() throws JsonProcessingException {
+      dummyDto = objectMapper.readValue(validRequestBody, CompanyCreateDto.class);
+      dummyCompany = new Company(1, dummyDto.getCompanyName(), dummyDto.getCountry(), dummyDto.getCity());
+    }
 
     @Test
     public void createCompany_Response_InternalServerError_When_Service_Throws() throws Exception {

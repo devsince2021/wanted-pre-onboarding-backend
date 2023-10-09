@@ -2,7 +2,13 @@ package com.han.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "posts")
 public class Post {
@@ -29,4 +35,12 @@ public class Post {
   @NotNull
   @Column(name = "tech_stack")
   private String techStack;
+
+  public Post(Company company, String position, Integer compensation, String jobDescription, String techStack) {
+    this.company = company;
+    this.position = position;
+    this.compensation = compensation;
+    this.jobDescription = jobDescription;
+    this.techStack = techStack;
+  }
 }
