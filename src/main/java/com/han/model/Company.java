@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 
 @Data
 @NoArgsConstructor
@@ -28,6 +30,9 @@ public class Company {
   @NotNull
   @Column(name = "city", nullable = false)
   private String city;
+
+  @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+  private List<Post> posts;
 
   public Company(String name, String country, String city) {
     this.name = name;
