@@ -11,8 +11,9 @@ public class Post {
   private Integer id;
 
   @NotNull
-  @Column(name = "company_id")
-  private Integer companyId;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "company_id")
+  private Company company;
 
   @NotNull
   @Column(name = "job_position")
