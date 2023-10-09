@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="companies")
+@Table(name = "companies")
 public class Company {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,6 +35,13 @@ public class Company {
   private List<Post> posts;
 
   public Company(String name, String country, String city) {
+    this.name = name;
+    this.country = country;
+    this.city = city;
+  }
+
+  public Company(Integer id, String name, String country, String city) {
+    this.id = id;
     this.name = name;
     this.country = country;
     this.city = city;
