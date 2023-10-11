@@ -2,6 +2,8 @@ package com.han.controller;
 
 import com.han.constants.EndPoint;
 import com.han.dto.PostCreateDto;
+import com.han.dto.PostListDto;
+import com.han.dto.PostListResDto;
 import com.han.dto.PostUpdateDto;
 import com.han.exception.PostException;
 import com.han.model.Post;
@@ -11,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -51,4 +55,12 @@ public class PostController {
     Boolean isDeleted = postService.deletePost(id);
     return isDeleted;
   }
+
+  @GetMapping(EndPoint.POST)
+  @ResponseStatus(HttpStatus.OK)
+  public List<PostListResDto> getPostList(@Valid PostListDto dto) {
+    List<PostListResDto> list = postService.getList(dto);
+    return list;
+  }
+
 }
