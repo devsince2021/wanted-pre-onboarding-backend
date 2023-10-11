@@ -1,7 +1,6 @@
 package com.han.service.utils;
 
 import com.han.dto.PostCreateDto;
-import com.han.dto.PostListDto;
 import com.han.dto.PostUpdateDto;
 import com.han.exception.PostException;
 import com.han.model.Company;
@@ -9,9 +8,6 @@ import com.han.model.Post;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -75,16 +71,5 @@ public class PostFormatter {
     dto.setTechStack(post.getTechStack());
 
     return dto;
-  }
-
-  public Pageable toPostPageable(PostListDto dto) {
-    Integer offset = dto.getPage() - 1;
-    Integer limit = dto.getLimit();
-    String sort = dto.getSort();
-    String order = dto.getOrder();
-
-    return order.equals("desc")
-            ? PageRequest.of(offset, limit, Sort.by(sort).descending())
-            : PageRequest.of(offset, limit, Sort.by(sort).ascending());
   }
 }
