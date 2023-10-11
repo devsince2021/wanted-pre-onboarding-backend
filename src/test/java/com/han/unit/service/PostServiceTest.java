@@ -1,12 +1,14 @@
 package com.han.unit.service;
 
 import com.han.dto.PostCreateDto;
+import com.han.dto.PostUpdateDto;
 import com.han.exception.PostException;
 import com.han.model.Company;
 import com.han.model.Post;
 import com.han.repository.PostRepository;
 import com.han.service.PostServiceImpl;
 import com.han.service.utils.PostFormatter;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,6 +32,55 @@ public class PostServiceTest {
 
   @InjectMocks
   private PostServiceImpl postService;
+
+  @Nested
+  class UpdatePostTest {
+
+    private PostUpdateDto dummyDto = new PostUpdateDto(1, 1, "Backend", 1000, "jd", "spring");
+    private Company dummyCompany;
+    private Post dummyPost;
+
+    @BeforeEach
+    public void setUp() {
+      this.dummyCompany = new Company(dummyDto.getCompanyId(), "wanted1", "Korea", "Seoul");
+      this.dummyPost = new Post(dummyDto.getId(), dummyCompany, dummyDto.getPosition(), dummyDto.getCompensation(), dummyDto.getJobDescription(), dummyDto.getTechStack());
+    }
+
+    @Test
+//    @DisplayName()
+    public void updatePost_Throws_PostException_When_Dto_Is_Invalid() {
+      PostUpdateDto invalidDto = new PostUpdateDto();
+      when(postFormatter.toPost(invalidDto)).thenThrow(PostException.class);
+      assertThrows(PostException.class, () -> postService.updatePost(invalidDto));
+    }
+
+    @Test
+    public void updatePost_Throws_PostException_When_Dto_Is_Null() {
+      PostUpdateDto invalidDto = null;
+      when(postFormatter.toPost(invalidDto)).thenThrow(PostException.class);
+      assertThrows(PostException.class, () -> postService.updatePost(invalidDto));
+    }
+
+    @Test
+    public void updatePost_Throws_PostException_When_Result_Is_Null() {
+      PostUpdateDto invalidResult = null;
+      when(postFormatter.toPost(dummyDto)).thenReturn(dummyPost);
+      when(postRepository.update(dummyPost)).thenReturn(dummyPost);
+      when(postFormatter.toDto(dummyPost)).thenReturn(invalidResult);
+
+      assertThrows(PostException.class, () -> postService.updatePost(dummyDto));
+    }
+
+    @Test
+    public void updatePost_Returns_PostUpdateDto() {
+      when(postFormatter.toPost(dummyDto)).thenReturn(dummyPost);
+      when(postRepository.update(dummyPost)).thenReturn(dummyPost);
+      when(postFormatter.toDto(dummyPost)).thenReturn(dummyDto);
+      PostUpdateDto result = postService.updatePost(dummyDto);
+
+      assertThat(result.getId()).isEqualTo(dummyDto.getId());
+    }
+  }
 
   @Nested
   class CreatePostTest {

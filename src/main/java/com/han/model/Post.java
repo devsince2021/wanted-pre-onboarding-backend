@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @NoArgsConstructor
@@ -15,7 +16,7 @@ public class Post {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
-
+  @ToString.Exclude
   @NotNull
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "company_id")
@@ -43,4 +44,5 @@ public class Post {
     this.jobDescription = jobDescription;
     this.techStack = techStack;
   }
+
 }

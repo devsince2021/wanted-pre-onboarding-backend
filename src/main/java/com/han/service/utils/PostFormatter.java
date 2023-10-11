@@ -1,6 +1,7 @@
 package com.han.service.utils;
 
 import com.han.dto.PostCreateDto;
+import com.han.dto.PostUpdateDto;
 import com.han.exception.PostException;
 import com.han.model.Company;
 import com.han.model.Post;
@@ -15,6 +16,7 @@ public class PostFormatter {
 
   @PersistenceContext
   private EntityManager entityManager;
+
   public Post toPost(PostCreateDto dto) {
     if (dto == null || !dto.isValid()) {
       log.error("Error in toPost: >> Invalid PostCreateDto");
@@ -31,5 +33,43 @@ public class PostFormatter {
     post.setTechStack(dto.getTechStack());
 
     return post;
+  }
+
+  public Post toPost(PostUpdateDto dto) {
+    if (dto == null || !dto.isValid()) {
+      log.error("Error in toPost: >> Invalid PostUpdateDto");
+      throw new PostException("Invalid PostUpdateDto");
+    }
+
+    Company companyProxy = entityManager.getReference(Company.class, dto.getCompanyId());
+
+    Post post = new Post();
+    post.setId(dto.getId());
+    post.setCompany(companyProxy);
+    post.setPosition(dto.getPosition());
+    post.setCompensation(dto.getCompensation());
+    post.setJobDescription(dto.getJobDescription());
+    post.setTechStack(dto.getTechStack());
+
+    return post;
+  }
+
+  public PostUpdateDto toDto(Post post) {
+    if (post == null) {
+      log.error("Error in toPostUpdateDto: >> Invalid Post");
+      throw new PostException("Invalid Post");
+    }
+
+    Integer companyId = post.getCompany().getId();
+    PostUpdateDto dto = new PostUpdateDto();
+
+    dto.setId(post.getId());
+    dto.setCompanyId(companyId);
+    dto.setPosition(post.getPosition());
+    dto.setCompensation(post.getCompensation());
+    dto.setJobDescription(post.getJobDescription());
+    dto.setTechStack(post.getTechStack());
+
+    return dto;
   }
 }
