@@ -44,4 +44,11 @@ public class PostController {
 
     return result;
   }
+
+  @DeleteMapping(EndPoint.POST_DETAIL)
+  @ResponseStatus(HttpStatus.OK)
+  public boolean deletePost(@PathVariable(EndPoint.POST_ID) Integer id) {
+    Boolean isDeleted = postService.deletePost(id);
+    return isDeleted;
+  }
 }

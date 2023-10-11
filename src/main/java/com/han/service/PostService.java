@@ -6,6 +6,6 @@ import com.han.model.Post;
 
 public interface PostService {
   Post createPost(PostCreateDto dto);
-
   PostUpdateDto updatePost(PostUpdateDto dto);
+  Boolean deletePost(Integer id);
 }
