@@ -1,10 +1,7 @@
 package com.han.controller;
 
 import com.han.constants.EndPoint;
-import com.han.dto.PostCreateDto;
-import com.han.dto.PostListDto;
-import com.han.dto.PostListResDto;
-import com.han.dto.PostUpdateDto;
+import com.han.dto.*;
 import com.han.exception.PostException;
 import com.han.model.Post;
 import com.han.service.PostService;
@@ -63,4 +60,10 @@ public class PostController {
     return list;
   }
 
+  @GetMapping(EndPoint.POST_DETAIL)
+  @ResponseStatus(HttpStatus.OK)
+  public PostDetailDto getPostDetail(@PathVariable(EndPoint.POST_ID) Integer id) {
+    PostDetailDto dto = postService.getPost(id);
+    return dto;
+  }
 }
