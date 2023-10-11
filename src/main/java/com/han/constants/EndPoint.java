@@ -7,4 +7,8 @@ public class EndPoint {
   public static final String COMPANY_DETAIL = COMPANY + "/{" + COMPANY_ID + "}";
 
   public static final String POST = "/post";
+
+  public static final String POST_ID = "postId";
+
+  public static final String POST_DETAIL = POST + "/{" + POST_ID + "}";
 }

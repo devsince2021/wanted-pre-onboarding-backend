@@ -10,8 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Slf4j
 @Service
 public class PostServiceImpl implements PostService {
@@ -48,4 +46,15 @@ public class PostServiceImpl implements PostService {
     return result;
   }
 
+  @Override
+  public Boolean deletePost(Integer id) {
+    try {
+      postRepository.deleteById(id);
+    } catch (RuntimeException ex) {
+      log.error("Error in deletePost: >> " + id);
+      throw new PostException("Fail to delete post");
+    }
+
+    return true;
+  }
 }
