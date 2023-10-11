@@ -1,6 +1,7 @@
 package com.han.service.utils;
 
 import com.han.dto.PostCreateDto;
+import com.han.dto.PostDetailDto;
 import com.han.dto.PostListDto;
 import com.han.dto.PostUpdateDto;
 import com.han.exception.PostException;
@@ -86,5 +87,21 @@ public class PostFormatter {
     return order.equals("desc")
             ? PageRequest.of(offset, limit, Sort.by(sort).descending())
             : PageRequest.of(offset, limit, Sort.by(sort).ascending());
+  }
+
+  public PostDetailDto toPostDetailDto(Post post) {
+    Company company = post.getCompany();
+    PostDetailDto dto = new PostDetailDto();
+
+    dto.setId(post.getId());
+    dto.setCompanyName(company.getName());
+    dto.setCountry(company.getCountry());
+    dto.setCity(company.getCity());
+    dto.setCompensation(post.getCompensation());
+    dto.setPosition(post.getPosition());
+    dto.setJobDescription(post.getJobDescription());
+    dto.setTechStack(post.getTechStack());
+
+    return dto;
   }
 }

@@ -1,9 +1,6 @@
 package com.han.service;
 
-import com.han.dto.PostCreateDto;
-import com.han.dto.PostListDto;
-import com.han.dto.PostListResDto;
-import com.han.dto.PostUpdateDto;
+import com.han.dto.*;
 import com.han.exception.PostException;
 import com.han.model.Post;
 import com.han.repository.PostRepository;
@@ -18,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -67,10 +65,20 @@ public class PostServiceImpl implements PostService {
     return true;
   }
 
+  @Override
   public List<PostListResDto> getList(PostListDto dto) {
     Pageable pageable = postFormatter.toPostPageable(dto);
     List<PostListResDto> posts = postRepository.findAllWithCompany(pageable);
 
     return posts;
+  }
+
+  @Override
+  public PostDetailDto getPost(Integer id) {
+    Optional<Post> maybePost = postRepository.findByIdWithCompany(id);
+    Post post = maybePost.orElseThrow(() -> new PostException("Fail to find post by " + id));
+    PostDetailDto dto = postFormatter.toPostDetailDto(post);
+
+    return dto;
   }
 }
