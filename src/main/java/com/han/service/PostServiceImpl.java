@@ -1,8 +1,6 @@
 package com.han.service;
 
 import com.han.dto.PostCreateDto;
-import com.han.dto.PostListDto;
-import com.han.dto.PostListResDto;
 import com.han.dto.PostUpdateDto;
 import com.han.exception.PostException;
 import com.han.model.Post;
@@ -10,14 +8,7 @@ import com.han.repository.PostRepository;
 import com.han.service.utils.PostFormatter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import java.util.LinkedList;
-import java.util.List;
 
 @Slf4j
 @Service
@@ -65,12 +56,5 @@ public class PostServiceImpl implements PostService {
     }
 
     return true;
-  }
-
-  public List<PostListResDto> getList(PostListDto dto) {
-    Pageable pageable = postFormatter.toPostPageable(dto);
-    List<PostListResDto> posts = postRepository.findAllWithCompany(pageable);
-
-    return posts;
   }
 }
