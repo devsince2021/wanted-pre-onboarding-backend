@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -31,6 +32,7 @@ public class Company {
   @Column(name = "city", nullable = false)
   private String city;
 
+  @ToString.Exclude
   @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
   private List<Post> posts;
 

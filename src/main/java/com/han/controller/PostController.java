@@ -2,6 +2,7 @@ package com.han.controller;
 
 import com.han.constants.EndPoint;
 import com.han.dto.PostCreateDto;
+import com.han.dto.PostUpdateDto;
 import com.han.exception.PostException;
 import com.han.model.Post;
 import com.han.service.PostService;
@@ -30,5 +31,17 @@ public class PostController {
     }
 
     return isSuccess;
+  }
+
+  @PutMapping(EndPoint.POST)
+  @ResponseStatus(HttpStatus.OK)
+  public PostUpdateDto updatePost(@RequestBody @Valid PostUpdateDto dto) {
+    PostUpdateDto result = postService.updatePost(dto);
+
+    if (result == null) {
+      throw new PostException("Fail to update post in controller");
+    }
+
+    return result;
   }
 }

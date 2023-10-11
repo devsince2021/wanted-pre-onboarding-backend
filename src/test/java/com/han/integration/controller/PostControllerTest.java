@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.han.constants.EndPoint;
 import com.han.controller.PostController;
 import com.han.dto.PostCreateDto;
+import com.han.dto.PostUpdateDto;
 import com.han.model.Company;
 import com.han.model.Post;
 import com.han.service.PostService;
@@ -33,6 +34,42 @@ public class PostControllerTest {
 
   @Autowired
   private ObjectMapper objectMapper;
+
+  @Nested
+  class UpdatePostTest {
+    private String validRequestBody = "{"
+            + "\"companyId\":1,"
+            + "\"position\":\"Backend\","
+            + "\"compensation\":1000,"
+            + "\"jobDescription\":\"apefojawpej\","
+            + "\"techStack\":\"spring boot\""
+            + "}";
+
+    private String invalidRequestBody = "{"
+//            + "\"companyId\":1,"
+            + "\"position\":\"Backend\","
+            + "\"compensation\":10000,"
+            + "\"jobDescription\":\"apwoefjwapofejowpe\","
+            + "\"techStack\":\"Spring boot\""
+            + "}";
+
+    private PostUpdateDto dummyDto;
+    private Post dummyPost;
+
+
+    @BeforeEach
+    public void setUp() throws JsonProcessingException {
+      dummyDto = objectMapper.readValue(validRequestBody, PostUpdateDto.class);
+      dummyPost = new Post(1, new Company(), dummyDto.getPosition(),
+              dummyDto.getCompensation(), dummyDto.getJobDescription(), dummyDto.getTechStack());
+    }
+
+    @Test
+    public void updatePost_Response_Ok_With_PostUpdateDto() {
+//      when(postService.updatePost(dummyDto)).thenReturn(dummyPost);
+    }
+  }
+
 
   @Nested
   class CreatePostTest {

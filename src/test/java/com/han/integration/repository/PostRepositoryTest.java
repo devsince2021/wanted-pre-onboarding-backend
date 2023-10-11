@@ -1,9 +1,11 @@
 package com.han.integration.repository;
 
+import com.han.exception.PostException;
 import com.han.model.Company;
 import com.han.model.Post;
 import com.han.repository.PostRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +21,50 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class PostRepositoryTest {
 
   @Autowired
-  TestEntityManager testEntityManager;
+  private TestEntityManager testEntityManager;
 
   @Autowired
   private PostRepository postRepository;
 
   @Nested
-  class SaveTest {
+  class UpdateTest {
 
+    private Company savedCompany;
+    private Post savedPost;
+
+    @BeforeEach
+    public void setUp() {
+      savedCompany = new Company("wanted1", "Korea", "Seoul");
+      testEntityManager.persist(savedCompany);
+
+      savedPost = new Post(savedCompany, "Be", 1000, "apweojfawe", "spring");
+      testEntityManager.persist(savedPost);
+    }
+
+    @Test
+    public void update_Throws_PostException_When_Post_Does_Not_Exist() {
+      Post notExistingPost = new Post(10, savedCompany, "Be", 1000, "apweojfawe", "spring");
+      assertThrows(PostException.class, () -> postRepository.update(notExistingPost));
+    }
+
+    @Test
+    public void update_Returns_updated_Post_When_Success() {
+      Post targetPost = new Post(
+              savedPost.getId(),
+              savedPost.getCompany(),
+              "BackEnd",
+              1000,
+              "this is edited",
+              "JS"
+      );
+
+      Post updatedPost = postRepository.update(targetPost);
+      assertThat(updatedPost.getPosition()).isEqualTo(targetPost.getPosition());
+    }
+  }
+
+  @Nested
+  class SaveTest {
     Company dummyCompany = new Company(1, "wanted1", "Korea", "Seoul");
     Post dummyPost = new Post(dummyCompany, "Backend", 1000, "blahblah", "spring");
 
@@ -42,8 +80,6 @@ public class PostRepositoryTest {
 
       assertThat(post.getId()).isNotNull();
       assertThat(post.getPosition()).isEqualTo(dummyPost.getPosition());
-
     }
-
   }
 }
