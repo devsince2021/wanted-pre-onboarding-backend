@@ -2,14 +2,21 @@ package com.han.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "posts")
 public class Post {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
-
+  @ToString.Exclude
   @NotNull
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "company_id")
@@ -29,4 +36,13 @@ public class Post {
   @NotNull
   @Column(name = "tech_stack")
   private String techStack;
+
+  public Post(Company company, String position, Integer compensation, String jobDescription, String techStack) {
+    this.company = company;
+    this.position = position;
+    this.compensation = compensation;
+    this.jobDescription = jobDescription;
+    this.techStack = techStack;
+  }
+
 }
