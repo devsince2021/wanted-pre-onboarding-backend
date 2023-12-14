@@ -45,7 +45,8 @@ public class CompanyControllerTest {
             + "\"id\":1,"
             + "\"name\":\"wanted6\","
             + "\"country\":\"Korea\","
-            + "\"city\":\"Seoul\""
+            + "\"city\":\"Seoul\","
+            + "\"posts\":null"
             + "}";
 
     @Test
